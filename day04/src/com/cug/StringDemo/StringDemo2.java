@@ -1,4 +1,4 @@
-package com.cug.study;
+package com.cug.StringDemo;
 
 public class StringDemo2 {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.cug.study;
+package com.cug.StringDemo;
 
 public class FunctionTrain {
 //  方法和方法之间是平级关系，不可以相互嵌套定义

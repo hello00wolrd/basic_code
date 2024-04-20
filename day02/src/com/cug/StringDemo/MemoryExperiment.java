@@ -1,4 +1,4 @@
-package com.cug.study;
+package com.cug.StringDemo;
 
 import java.util.Random;
 

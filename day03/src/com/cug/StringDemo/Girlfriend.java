@@ -1,4 +1,4 @@
-package com.cug.study;
+package com.cug.StringDemo;
 
 //this可以区分成员变量和局部变量
 //被private修饰的成员只能在本类内访问
