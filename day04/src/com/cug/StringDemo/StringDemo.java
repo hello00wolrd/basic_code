@@ -1,5 +1,5 @@
 package com.cug.StringDemo;
-
+//方便拼接字符串，字符串反转
 public class StringDemo {
     public static void main(String[] args) {
         int[] arr = new int[0];
