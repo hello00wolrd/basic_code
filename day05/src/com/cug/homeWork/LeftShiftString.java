@@ -1,4 +1,4 @@
-package homeWork;
+package com.cug.homeWork;
 
 import java.util.Scanner;
 
