@@ -2,6 +2,11 @@ package com.cug.StaticDemo;
 
 import java.util.StringJoiner;
 
+/*
+ * 静态方法,只能访问静态
+ * 非静态方法可以访问所有
+ * 静态方法中没有this关键字
+ * */
 public class ArrayUtil {
     private ArrayUtil() {
     }
