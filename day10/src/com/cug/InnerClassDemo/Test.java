@@ -7,5 +7,7 @@ public class Test {
         c.carColor = "black";
         c.carName = "BMW";
         c.show();
+        Outer.Inner o = new Outer(1).new Inner();
+        o.show();
     }
 }
