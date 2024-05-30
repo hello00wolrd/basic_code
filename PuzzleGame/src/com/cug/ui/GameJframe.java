@@ -1,11 +1,17 @@
 package com.cug.ui;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Random;
 
-public class GameJframe extends JFrame {
+public class GameJframe extends JFrame implements KeyListener {
     //    创建二维数组
     int[][] data = new int[3][3];
+    //    记录空白方块在二维数组中的位置
+    int x = 0;
+    int y = 0;
 
     //    游戏主界面
     public GameJframe() {
@@ -23,7 +29,7 @@ public class GameJframe extends JFrame {
     }
 
     private void initData() {
-        //        定义一个一维数组
+        //        定义一个一维数组0-8
         int[] tempArray = new int[9];
         for (int i = 0; i < tempArray.length; i++) {
             tempArray[i] = i;
@@ -41,27 +47,41 @@ public class GameJframe extends JFrame {
 //        创建个二维数组
 
         int index = 0;
-        for (int i = 0; i < this.data.length; i++) {
-            for (int j = 0; j < this.data[i].length; j++) {
-                this.data[i][j] = tempArray[index];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (tempArray[index] == 0) {
+//                    记录空白块位置
+                    this.x = i;
+                    this.y = j;
+                } else {
+                    this.data[i][j] = tempArray[index];
+                }
                 index++;
             }
         }
     }
 
     private void initImage() {
+//        清空原本已经出现的所有图片
+        this.getContentPane().removeAll();
+//      先加载的图片在上方,后加载的图片塞在下面
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 //                正确拼图为1-8顺序加载
-                ImageIcon icon = new ImageIcon("E:\\java_code\\basic_code\\PuzzleGame\\image\\imageonline\\" + data[i][j] + ".jpeg");
+                ImageIcon icon = new ImageIcon("PuzzleGame\\image\\imageonline\\" + data[i][j] + ".jpeg");
 //                创建一个JLabel的对象(管理容器)
                 JLabel jlabel = new JLabel(icon);
 //                指定位置
-                jlabel.setBounds(icon.getIconWidth() * i, icon.getIconHeight() * j, icon.getIconWidth(), icon.getIconHeight());
+                jlabel.setBounds(icon.getIconWidth() * j, icon.getIconHeight() * i, icon.getIconWidth(), icon.getIconHeight());
+//                添加边框
+                jlabel.setBorder(new BevelBorder(BevelBorder.RAISED));
 //                把管理容器添加到页面中
                 this.getContentPane().add(jlabel);
             }
         }
+//        刷新一下界面
+        this.getContentPane().repaint();
     }
 
     private void initJM() {
@@ -104,5 +124,51 @@ public class GameJframe extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 //        取消默认居中放置,只有取消了才会按照XY轴的形式添加组件
         this.setLayout(null);
+//        给整个界面添加键盘监听事件
+        this.addKeyListener(this);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+//对上、下、左、右进行判断
+//        左：37 上：38 右：39 下：40
+        int code = e.getKeyCode();
+//        System.out.println(code);
+        if (code == 37) {
+            System.out.println("向左移动");
+            if (y == 2) return;
+            data[x][y] = data[x][y + 1];
+            data[x][y + 1] = 0;
+            y++;
+        } else if (code == 38) {
+            System.out.println("向上移动");
+            if (x == 2) return;
+            data[x][y] = data[x + 1][y];
+            data[x + 1][y] = 0;
+            x++;
+        } else if (code == 39) {
+            System.out.println("向右移动");
+            if (y == 0) return;
+            data[x][y] = data[x][y - 1];
+            data[x][y - 1] = 0;
+            y--;
+        } else if (code == 40) {
+            System.out.println("向下移动");
+            if (x == 0) return;
+            data[x][y] = data[x - 1][y];
+            data[x - 1][y] = 0;
+            x--;
+        }
+        initImage();
     }
 }
