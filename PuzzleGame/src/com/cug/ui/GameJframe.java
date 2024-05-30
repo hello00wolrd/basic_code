@@ -12,6 +12,11 @@ public class GameJframe extends JFrame implements KeyListener {
     //    记录空白方块在二维数组中的位置
     int x = 0;
     int y = 0;
+    int[][] win = new int[][]{
+            {1, 4, 7},
+            {2, 5, 8},
+            {3, 6, 0}
+    };
 
     //    游戏主界面
     public GameJframe() {
@@ -65,7 +70,12 @@ public class GameJframe extends JFrame implements KeyListener {
 //        清空原本已经出现的所有图片
         this.getContentPane().removeAll();
 //      先加载的图片在上方,后加载的图片塞在下面
-
+        if (victory()) {
+            ImageIcon victoryIcon = new ImageIcon("PuzzleGame\\image\\victory.png");
+            JLabel victoryShow = new JLabel(victoryIcon);
+            victoryShow.setBounds(0, 0, victoryIcon.getIconWidth(), victoryIcon.getIconHeight());
+            this.getContentPane().add(victoryShow);
+        }
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 //                正确拼图为1-8顺序加载
@@ -133,13 +143,30 @@ public class GameJframe extends JFrame implements KeyListener {
 
     }
 
+    //    当键盘按下不松的时候调用此类方法
     @Override
     public void keyPressed(KeyEvent e) {
-
+        int code = e.getKeyCode();
+//        按下去"a"触发
+        if (code == 65) {
+//    把界面中所有图片删除
+            this.getContentPane().removeAll();
+//            加载一张完整的图片
+            ImageIcon allIcon = new ImageIcon("E:\\java_code\\basic_code\\PuzzleGame\\image\\all.jpeg");
+            JLabel all = new JLabel(allIcon);
+            all.setBounds(0, 0, allIcon.getIconWidth(), allIcon.getIconHeight());
+            this.getContentPane().add(all);
+            this.getContentPane().repaint();
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+//        先判断游戏是否胜利,如果胜利,直接结束,不可以移动方块
+        if (victory()){
+            return;
+        }
+
 //对上、下、左、右进行判断
 //        左：37 上：38 右：39 下：40
         int code = e.getKeyCode();
@@ -150,25 +177,50 @@ public class GameJframe extends JFrame implements KeyListener {
             data[x][y] = data[x][y + 1];
             data[x][y + 1] = 0;
             y++;
+            initImage();
         } else if (code == 38) {
             System.out.println("向上移动");
             if (x == 2) return;
             data[x][y] = data[x + 1][y];
             data[x + 1][y] = 0;
             x++;
+            initImage();
         } else if (code == 39) {
             System.out.println("向右移动");
             if (y == 0) return;
             data[x][y] = data[x][y - 1];
             data[x][y - 1] = 0;
             y--;
+            initImage();
         } else if (code == 40) {
             System.out.println("向下移动");
             if (x == 0) return;
             data[x][y] = data[x - 1][y];
             data[x - 1][y] = 0;
             x--;
+            initImage();
+        } else if (code == 65) {
+            initImage();
+        } else if (code == 87) {
+//            当按下"w"的时候实现作弊,直接通关
+            data = new int[][]{
+                    {1, 4, 7},
+                    {2, 5, 8},
+                    {3, 6, 0}
+            };
+            initImage();
         }
-        initImage();
+    }
+
+    //    判断data数组与win数组中是否相同,如果全部相同,返回true
+    public boolean victory() {
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                if (win[i][j] != data[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
