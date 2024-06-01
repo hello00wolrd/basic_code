@@ -2,11 +2,13 @@ package com.cug.ui;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
-public class GameJframe extends JFrame implements KeyListener {
+public class GameJframe extends JFrame implements KeyListener, ActionListener {
     //    创建二维数组
     int[][] data = new int[3][3];
     //    记录空白方块在二维数组中的位置
@@ -17,6 +19,13 @@ public class GameJframe extends JFrame implements KeyListener {
             {2, 5, 8},
             {3, 6, 0}
     };
+    int step = 0;
+    //        创建选项的条目
+    JMenuItem replayItem = new JMenuItem("重新游戏");
+    JMenuItem reLoginItem = new JMenuItem("重新登录");
+    JMenuItem closeGame = new JMenuItem("关闭游戏");
+
+    JMenuItem accountItem = new JMenuItem("公众号");
 
     //    游戏主界面
     public GameJframe() {
@@ -33,6 +42,7 @@ public class GameJframe extends JFrame implements KeyListener {
         this.setVisible(true);
     }
 
+    //初始化游戏数据
     private void initData() {
         //        定义一个一维数组0-8
         int[] tempArray = new int[9];
@@ -58,14 +68,14 @@ public class GameJframe extends JFrame implements KeyListener {
 //                    记录空白块位置
                     this.x = i;
                     this.y = j;
-                } else {
-                    this.data[i][j] = tempArray[index];
                 }
+                this.data[i][j] = tempArray[index];
                 index++;
             }
         }
     }
 
+    //初始化图片
     private void initImage() {
 //        清空原本已经出现的所有图片
         this.getContentPane().removeAll();
@@ -73,9 +83,13 @@ public class GameJframe extends JFrame implements KeyListener {
         if (victory()) {
             ImageIcon victoryIcon = new ImageIcon("PuzzleGame\\image\\victory.png");
             JLabel victoryShow = new JLabel(victoryIcon);
-            victoryShow.setBounds(0, 0, victoryIcon.getIconWidth(), victoryIcon.getIconHeight());
+            victoryShow.setBounds(200, 200, victoryIcon.getIconWidth(), victoryIcon.getIconHeight());
             this.getContentPane().add(victoryShow);
         }
+        JLabel stepCount = new JLabel("步数" + step);
+        stepCount.setBounds(50, 30, 100, 20);
+        this.getContentPane().add(stepCount);
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 //                正确拼图为1-8顺序加载
@@ -94,6 +108,7 @@ public class GameJframe extends JFrame implements KeyListener {
         this.getContentPane().repaint();
     }
 
+    //初始化菜单栏
     private void initJM() {
         //        初始化菜单
 //        创建菜单对象
@@ -102,12 +117,7 @@ public class GameJframe extends JFrame implements KeyListener {
 //        创建菜单上两个选项的对象
         JMenu functionJMenu = new JMenu("功能");
         JMenu aboutJMenu = new JMenu("关于作者");
-//        创建选项的条目
-        JMenuItem replayItem = new JMenuItem("重新游戏");
-        JMenuItem reLoginItem = new JMenuItem("重新登录");
-        JMenuItem closeGame = new JMenuItem("关闭游戏");
 
-        JMenuItem accountItem = new JMenuItem("公众号");
 
 //        将每个选项中的条目添加到选项当中
         functionJMenu.add(replayItem);
@@ -115,13 +125,21 @@ public class GameJframe extends JFrame implements KeyListener {
         functionJMenu.add(closeGame);
 
         aboutJMenu.add(accountItem);
+
+//        给条目绑定事件
+        replayItem.addActionListener(this);
+        reLoginItem.addActionListener(this);
+        closeGame.addActionListener(this);
+        accountItem.addActionListener(this);
 //      把菜单里面的选项添加到菜单中
         jmb.add(functionJMenu);
         jmb.add(aboutJMenu);
 //        给整个界面设置菜单
         this.setJMenuBar(jmb);
+
     }
 
+    //初始化界面
     private void init() {
         this.setSize(676, 911);
 //        设置标题
@@ -163,7 +181,7 @@ public class GameJframe extends JFrame implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 //        先判断游戏是否胜利,如果胜利,直接结束,不可以移动方块
-        if (victory()){
+        if (victory()) {
             return;
         }
 
@@ -177,6 +195,8 @@ public class GameJframe extends JFrame implements KeyListener {
             data[x][y] = data[x][y + 1];
             data[x][y + 1] = 0;
             y++;
+//            每移动一次都计数加一
+            step++;
             initImage();
         } else if (code == 38) {
             System.out.println("向上移动");
@@ -184,6 +204,8 @@ public class GameJframe extends JFrame implements KeyListener {
             data[x][y] = data[x + 1][y];
             data[x + 1][y] = 0;
             x++;
+//            每移动一次都计数加一
+            step++;
             initImage();
         } else if (code == 39) {
             System.out.println("向右移动");
@@ -191,6 +213,8 @@ public class GameJframe extends JFrame implements KeyListener {
             data[x][y] = data[x][y - 1];
             data[x][y - 1] = 0;
             y--;
+//            每移动一次都计数加一
+            step++;
             initImage();
         } else if (code == 40) {
             System.out.println("向下移动");
@@ -198,6 +222,8 @@ public class GameJframe extends JFrame implements KeyListener {
             data[x][y] = data[x - 1][y];
             data[x - 1][y] = 0;
             x--;
+//            每移动一次都计数加一
+            step++;
             initImage();
         } else if (code == 65) {
             initImage();
@@ -222,5 +248,44 @@ public class GameJframe extends JFrame implements KeyListener {
             }
         }
         return true;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+//获取当前被点击的对象
+        Object source = e.getSource();
+//        判断
+        if (source == replayItem) {
+//            System.out.println("重新游戏");
+            step = 0;
+            initData();
+            initImage();
+        } else if (source == reLoginItem) {
+//            System.out.println("重新登陆");
+//            关闭当前游戏界面
+            this.setVisible(false);
+//            打开登录界面
+            new LoginJframe();
+        } else if (source == closeGame) {
+//            System.out.println("关闭游戏");
+            System.exit(0);
+        } else if (source == accountItem) {
+//            System.out.println("公众号");
+//            弹窗对象
+            JDialog jDialog = new JDialog();
+            JLabel jLabel = new JLabel("https://github.com/hello00wolrd/basic_code");
+            jLabel.setBounds(0, 0, 100, 200);
+            jDialog.getContentPane().add(jLabel);
+//            给弹框设置大小
+            jDialog.setSize(300, 100);
+//            弹框置顶
+            jDialog.setAlwaysOnTop(true);
+//            弹框居中
+            jDialog.setLocationRelativeTo(null);
+//            弹框不关闭不能操作以后的界面
+            jDialog.setModal(true);
+//            显示弹框
+            jDialog.setVisible(true);
+        }
     }
 }
