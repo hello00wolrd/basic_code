@@ -2,6 +2,7 @@ package com.whu.CollectionDemo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class ListDemo {
     public static void main(String[] args) {
@@ -17,8 +18,6 @@ public class ListDemo {
         String s = ls.remove(0);
         System.out.println(s);
         System.out.println(ls);
-
-
 
 
         //1.创建集合并添加元素
@@ -38,5 +37,16 @@ public class ListDemo {
         Integer i = Integer.valueOf(1);
         list.remove(i);
         System.out.println(list);
+
+//        获取一个列表迭代器
+        ListIterator<String> it = ls.listIterator();
+        while (it.hasNext()) {
+            String str1 = it.next();
+            if(str1.equals("zhaoliu")){
+                it.add("add_examples");
+            }
+        }
+        System.out.println(ls);
+
     }
 }
