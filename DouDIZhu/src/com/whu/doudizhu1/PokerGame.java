@@ -27,8 +27,40 @@ public class PokerGame {
 //        洗牌
         Collections.shuffle(list);
 //        发牌
+        ArrayList<String> lord = new ArrayList<>();
+        ArrayList<String> player1 = new ArrayList<>();
+        ArrayList<String> player2 = new ArrayList<>();
+        ArrayList<String> player3 = new ArrayList<>();
 
-//        看牌
-        System.out.println(list);
+//        遍历牌盒得到每一张牌
+        for (int i = 0; i < list.size(); i++) {
+            String poker = list.get(i);
+            if (i <= 2) {
+//                地主底牌
+                lord.add(poker);
+                continue;
+            }
+            if (i % 3 == 0) {
+                player1.add(poker);
+            } else if (i % 3 == 1) {
+                player2.add(poker);
+            } else {
+                player3.add(poker);
+            }
+        }
+        //            看牌
+        lookPoker("community card", lord);
+        lookPoker("player1", player1);
+        lookPoker("player2", player2);
+        lookPoker("player3", player3);
+    }
+
+    //    看牌
+    public void lookPoker(String name, ArrayList<String> list) {
+        System.out.println(name + ": ");
+        for (String poker : list) {
+            System.out.print(poker + " ");
+        }
+        System.out.println();
     }
 }
